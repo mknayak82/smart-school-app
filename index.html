@@ -1,208 +1,51 @@
-<!DOCTYPE html>
-<html lang="or">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart School Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .main-card { max-width: 600px; margin: 30px auto; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: #1a73e8; color: white; padding: 25px; text-align: center; }
-        .stats-box { display: flex; justify-content: space-around; padding: 20px; background: #e8f0fe; border-bottom: 1px solid #ddd; }
-        .btn-upload { background: #34a853; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
-        .btn-upload:hover { background: #2d8e47; }
-        .paper-clip { font-size: 24px; margin-right: 10px; }
-        .loading { display: none; }
-        .data-table { margin-top: 20px; }
-        .data-row { padding: 12px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
-        .data-row:last-child { border-bottom: none; }
-        .error-msg { color: #d32f2f; padding: 10px; background: #ffebee; border-radius: 5px; display: none; margin-top: 10px; }
-        .success-msg { color: #388e3c; padding: 10px; background: #e8f5e9; border-radius: 5px; display: none; margin-top: 10px; }
-    </style>
-</head>
-<body>
-
-<div class="main-card">
-    <div class="header">
-        <h3>Smart School App 🚀</h3>
-        <p>Dashboard</p>
-    </div>
-    
-    <div class="stats-box text-center">
-        <div>
-            <h6 class="text-muted">Students</h6>
-            <h4 id="studentCount">--</h4>
-        </div>
-        <div>
-            <h6 class="text-muted">Bus Status</h6>
-            <h4 id="busStatus" class="text-success">--</h4>
-        </div>
-    </div>
-
-    <div class="p-4">
-        <!-- Configuration Section -->
-        <div class="mb-3">
-            <label for="gasUrl" class="form-label">Google Apps Script URL:</label>
-            <input type="text" id="gasUrl" class="form-control form-control-sm" placeholder="Paste your Google Apps Script Web App URL here" />
-            <small class="text-muted">Get this URL by deploying a Google Apps Script as a Web App</small>
-        </div>
-
-        <!-- File Upload Section -->
-        <h6 class="mb-3">Document Upload (Paper Clip)</h6>
-        <label for="file-input" class="btn-upload text-center" style="cursor: pointer;">
-            <span class="paper-clip">📎</span> Attachment ଯୋଡ଼ନ୍ତୁ
-        </label>
-        <input id="file-input" type="file" style="display: none;" onchange="handleFileSelection()" />
-        <div id="fileNameDisplay" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
-        
-        <hr>
-        
-        <!-- Refresh Data Button -->
-        <button class="btn btn-outline-primary w-100" onclick="fetchGoogleSheetData()">
-            <span id="refreshText">Refresh Data</span>
-            <span id="refreshSpinner" class="spinner-border spinner-border-sm ms-2 loading" role="status" aria-hidden="true"></span>
-        </button>
-
-        <!-- Error and Success Messages -->
-        <div id="errorMessage" class="error-msg"></div>
-        <div id="successMessage" class="success-msg"></div>
-
-        <!-- Data Table Section -->
-        <div class="data-table">
-            <h6>Student & Bus Data:</h6>
-            <div id="dataDisplay" style="display: none;">
-                <div class="data-row">
-                    <span class="fw-bold">Field</span>
-                    <span class="fw-bold">Value</span>
-                </div>
-                <div class="data-row">
-                    <span>Total Students</span>
-                    <span id="displayStudentCount">-</span>
-                </div>
-                <div class="data-row">
-                    <span>Bus Status</span>
-                    <span id="displayBusStatus">-</span>
-                </div>
-                <div id="additionalData"></div>
-            </div>
-            <div id="noDataMessage" style="text-align: center; color: #999; padding: 20px;">
-                Click "Refresh Data" to load data from Google Sheet
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Store Google Apps Script URL in localStorage
-    const gasUrlInput = document.getElementById('gasUrl');
-    const savedUrl = localStorage.getItem('gasUrl');
-    if (savedUrl) {
-        gasUrlInput.value = savedUrl;
-    }
-
-    gasUrlInput.addEventListener('change', () => {
-        localStorage.setItem('gasUrl', gasUrlInput.value);
-    });
-
-    // Handle file selection
-    function handleFileSelection() {
-        const fileInput = document.getElementById('file-input');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-        
-        if (fileInput.files.length > 0) {
-            const fileName = fileInput.files[0].name;
-            fileNameDisplay.textContent = `✓ ଫାଇଲ୍ ବଛାଗଲା: ${fileName}`;
-            fileNameDisplay.style.color = '#4caf50';
+    <title>Teacher Attendance System</title>
+    <script>
+        // Haversine formula distance calculation
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Radius of Earth in meters
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + 
+                      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in meters
         }
-    }
-
-    // Fetch data from Google Apps Script
-    async function fetchGoogleSheetData() {
-        const gasUrl = document.getElementById('gasUrl').value.trim();
-        const errorMsg = document.getElementById('errorMessage');
-        const successMsg = document.getElementById('successMessage');
-        const refreshSpinner = document.getElementById('refreshSpinner');
-        const refreshText = document.getElementById('refreshText');
         
-        // Clear previous messages
-        errorMsg.style.display = 'none';
-        successMsg.style.display = 'none';
-        errorMsg.textContent = '';
-        successMsg.textContent = '';
-
-        // Validate URL
-        if (!gasUrl) {
-            errorMsg.textContent = 'Please enter a valid Google Apps Script URL';
-            errorMsg.style.display = 'block';
-            return;
-        }
-
-        // Show loading state
-        refreshSpinner.classList.remove('loading');
-        refreshText.textContent = 'Loading...';
-
-        try {
-            const response = await fetch(gasUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ action: 'getData' })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // Update stats box
-            document.getElementById('studentCount').textContent = data.studentCount || '--';
-            document.getElementById('busStatus').textContent = data.busStatus || '--';
-
-            // Update data display table
-            document.getElementById('displayStudentCount').textContent = data.studentCount || '-';
-            document.getElementById('displayBusStatus').textContent = data.busStatus || '-';
-
-            // Display additional data if available
-            const additionalDataDiv = document.getElementById('additionalData');
-            additionalDataDiv.innerHTML = '';
-
-            if (data.additionalData && typeof data.additionalData === 'object') {
-                Object.entries(data.additionalData).forEach(([key, value]) => {
-                    const row = document.createElement('div');
-                    row.className = 'data-row';
-                    row.innerHTML = `<span>${key}</span><span>${value}</span>`;
-                    additionalDataDiv.appendChild(row);
+        // Real-time location refresh and validation
+        function refreshLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const distance = haversine(lat, lon, TARGET_LAT, TARGET_LON);
+                    if (distance <= 10) {
+                        // Code to show success status
+                    } else {
+                        // Code to show failure status
+                    }
                 });
             }
-
-            document.getElementById('dataDisplay').style.display = 'block';
-            document.getElementById('noDataMessage').style.display = 'none';
-
-            successMsg.textContent = '✓ Data refreshed successfully from Google Sheet!';
-            successMsg.style.display = 'block';
-
-        } catch (error) {
-            errorMsg.textContent = `Error: ${error.message}. Make sure the Google Apps Script URL is correct and publicly accessible.`;
-            errorMsg.style.display = 'block';
-            console.error('Fetch error:', error);
-        } finally {
-            refreshSpinner.classList.add('loading');
-            refreshText.textContent = 'Refresh Data';
         }
-    }
-
-    // Optional: Auto-load data if URL exists
-    window.addEventListener('load', () => {
-        const gasUrl = document.getElementById('gasUrl').value.trim();
-        if (gasUrl) {
-            // Uncomment the line below to auto-load on page load
-            // fetchGoogleSheetData();
+    </script>
+</head>
+<body>
+    <h1>Teacher Attendance System</h1>
+    <label for="name">Teacher Name:</label>
+    <input type="text" id="name" />
+    <label for="scriptUrl">Google Apps Script URL:</label>
+    <input type="text" id="scriptUrl" />
+    <button onclick="sendAttendance()">Send Attendance</button>
+    <div id="messageBox"></div>
+    <script>
+        function sendAttendance() {
+            const name = document.getElementById('name').value;
+            const scriptUrl = document.getElementById('scriptUrl').value;
+            // AJAX call to send data to Google Sheets
+            // success and error message handling
         }
-    });
-</script>
-
+    </script>
 </body>
 </html>
