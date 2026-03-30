@@ -175,33 +175,31 @@
         chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    async function askGemini() {
-        const input = document.getElementById('ai-input').value;
-        const content = document.getElementById('chat-content');
-        if(!input) return;
+     async function askGemini() {
+    const input = document.getElementById('ai-input').value;
+    const content = document.getElementById('chat-content');
+    if(!input) return;
 
-        content.innerHTML += `<div class="text-primary mt-2"><b>You:</b> ${input}</div>`;
-        document.getElementById('ai-input').value = '';
+    content.innerHTML += `<div class="text-primary mt-2"><b>You:</b> ${input}</div>`;
+    document.getElementById('ai-input').value = '';
 
-        const apiKey = "AIzaSyA5d9PVGvRpODH2gefs_HzGuMa8KvBAaS8"; 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+    const apiKey = "AIzaSyA5d9PVGvRpODH2gefs_HzGuMa8KvBAaS8";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: input + " (Answer in Odia if asked in Odia or English otherwise)" }] }] })
-            });
-            const data = await response.json();
-            const aiText = data.candidates[0].content.parts[0].text;
-            content.innerHTML += `<div class="mt-2"><b>AI:</b> ${aiText}</div>`;
-            content.scrollTop = content.scrollHeight;
-        } catch (e) {
-            content.innerHTML += `<div class="text-danger mt-2">AI Error. Check Connection.</div>`;
-        }
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: input + " (Answer in Odia if asked in Odia or English otherwise. Keep it brief.)" }] }]
+            })
+        });
+        const data = await response.json();
+        const aiText = data.candidates[0].content.parts[0].text;
+        content.innerHTML += `<div class="mt-2"><b>AI:</b> ${aiText}</div>`;
+        content.scrollTop = content.scrollHeight;
+    } catch (e) {
+        content.innerHTML += `<div class="text-danger mt-2">AI Error: Please check your API key or connection.</div>`;
     }
-</script>
-
-</body>
-                      </html>
-                                                                                    
+}
+                                                    
