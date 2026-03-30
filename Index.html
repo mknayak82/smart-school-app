@@ -1,141 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="or">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SmartSchool \u2013 School Management System</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-<style>
-:root {
-  --primary: #1a56db;
-  --primary-dark: #1340a8;
-  --primary-light: #e8eeff;
-  --accent: #f59e0b;
-  --accent-light: #fef3c7;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --dark: #0f172a;
-  --dark2: #1e293b;
-  --dark3: #334155;
-  --mid: #64748b;
-  --light: #f1f5f9;
-  --white: #ffffff;
-  --border: #e2e8f0;
-  --radius: 14px;
-  --radius-sm: 8px;
-  --shadow: 0 4px 24px rgba(15,23,42,0.10);
-  --shadow-lg: 0 12px 40px rgba(15,23,42,0.16);
-  --font: 'Plus Jakarta Sans', sans-serif;
-  --sidebar-w: 260px;
-}
-*, *::before, *::after { box-sizing: border-box; }
-body { font-family: var(--font); background: var(--light); color: var(--dark); margin: 0; overflow-x: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart School ERP - AI Powered</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .login-card { max-width: 400px; margin: 80px auto; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; text-align: center; }
+        .logo-space { width: 100px; height: 100px; border-radius: 50%; background: #e9ecef; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px dashed #ccc; }
+        .logo-space img { width: 100%; height: 100%; object-fit: cover; }
+        .dashboard { display: none; padding: 20px; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        #ai-bubble { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; }
+        #ai-chat { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 400px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1000; overflow: hidden; }
+        .chat-header { background: #007bff; color: white; padding: 10px; font-weight: bold; }
+        #chat-content { flex: 1; padding: 10px; overflow-y: auto; font-size: 14px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
 
-/* \u2500\u2500 SCROLLBAR \u2500\u2500 */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+<div id="login-page">
+    <div class="login-card">
+        <div class="logo-space" id="school-logo">
+            <span>LOGO</span>
+            </div>
+        <h4>Smart School App</h4>
+        <p class="text-muted">Welcome, please login</p>
+        
+        <select id="login-role" class="form-select mb-3" onchange="updateLoginUI()">
+            <option value="">Role ବାଛନ୍ତୁ</option>
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+            <option value="parent">Parent</option>
+            <option value="driver">Driver</option>
+        </select>
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   LOGIN
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#login-screen {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1a56db 100%);
-  position: relative; overflow: hidden;
-}
-#login-screen::before {
-  content:''; position:absolute; inset:0;
-  background: radial-gradient(circle at 20% 80%, rgba(245,158,11,0.12) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(99,179,255,0.10) 0%, transparent 50%);
-}
-.login-card {
-  background: var(--white); border-radius: 24px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
-  width: min(460px, 96vw); padding: 40px 36px;
-  position: relative; z-index: 1;
-  animation: loginPop 0.5s cubic-bezier(.22,1,.36,1);
-}
-@keyframes loginPop { from{opacity:0;transform:translateY(24px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+        <div id="login-fields" class="hidden">
+            <input type="text" id="user-id" class="form-control mb-2" placeholder="Username / Reg No.">
+            <input type="password" id="user-pass" class="form-control mb-3" placeholder="Password / Mobile No.">
+            <button class="btn btn-primary w-100" onclick="handleLogin()">Login</button>
+        </div>
+    </div>
+</div>
 
-.school-logo-ring {
-  width: 90px; height: 90px; border-radius: 50%;
-  border: 3px dashed var(--border); margin: 0 auto 4px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--light); color: var(--mid); font-size: 13px;
-  text-align: center; cursor: pointer; position: relative; overflow: hidden;
-  transition: border-color 0.2s;
-}
-.school-logo-ring:hover { border-color: var(--primary); }
-.school-logo-ring img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-.school-logo-ring input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+<div id="main-dashboard" class="dashboard container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 id="dash-title">Dashboard</h3>
+        <button class="btn btn-danger btn-sm" onclick="location.reload()">Logout</button>
+    </div>
 
-.login-brand { text-align:center; margin-bottom:28px; }
-.login-brand h2 { font-family:'Playfair Display',serif; font-size:22px; color:var(--dark); margin:8px 0 2px; }
-.login-brand p { font-size:12px; color:var(--mid); letter-spacing:.5px; }
+    <div id="admin-tools" class="role-section hidden">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5>Student Registration</h5>
+                    <input type="text" id="reg-name" class="form-control mb-2" placeholder="Student Name">
+                    <input type="text" id="reg-no" class="form-control mb-2" placeholder="Registration No.">
+                    <input type="text" id="reg-mobile" class="form-control mb-2" placeholder="Parent Mobile No.">
+                    <input type="text" id="reg-pen" class="form-control mb-2" placeholder="PEN Number">
+                    <button class="btn btn-success w-100" onclick="saveStudent()">Register Student</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5>Manage Records (TC/PEN)</h5>
+                    <div id="student-list" style="max-height: 200px; overflow-y: auto;">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.role-selector { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px; }
-.role-pill {
-  border:2px solid var(--border); border-radius:10px; padding:12px 8px; text-align:center;
-  cursor:pointer; transition:all .2s; background:var(--white);
-}
-.role-pill .ri { font-size:22px; display:block; margin-bottom:4px; }
-.role-pill span { font-size:12px; font-weight:600; color:var(--mid); }
-.role-pill:hover { border-color:var(--primary); background:var(--primary-light); }
-.role-pill.active { border-color:var(--primary); background:var(--primary-light); }
-.role-pill.active span { color:var(--primary); }
+    <div class="card p-3">
+        <h5>School Calendar & Timetable</h5>
+        <p class="text-muted">School updates and schedules will be displayed here.</p>
+        <div id="shared-content"></div>
+    </div>
+</div>
 
-.form-label { font-size:13px; font-weight:600; color:var(--dark3); margin-bottom:5px; }
-.form-control, .form-select {
-  border-radius: var(--radius-sm); border:2px solid var(--border);
-  font-family: var(--font); font-size:14px; padding:10px 14px;
-  transition: border-color .2s, box-shadow .2s;
-}
-.form-control:focus, .form-select:focus {
-  border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,86,219,.1); outline:none;
-}
-.btn-login {
-  width:100%; padding:13px; border:none; border-radius:10px;
-  background: linear-gradient(135deg, var(--primary), #3b82f6);
-  color:#fff; font-size:15px; font-weight:700; font-family:var(--font);
-  cursor:pointer; transition:all .2s; letter-spacing:.3px;
-}
-.btn-login:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(26,86,219,.35); }
-.login-hint { font-size:12px; color:var(--mid); text-align:center; margin-top:12px; }
-.login-hint code { background:var(--light); padding:2px 6px; border-radius:4px; font-size:11px; }
+<div id="ai-bubble" onclick="toggleChat()">AI</div>
+<div id="ai-chat">
+    <div class="chat-header">Gemini AI Assistant</div>
+    <div id="chat-content">ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?</div>
+    <div class="p-2 border-top">
+        <div class="input-group">
+            <input type="text" id="ai-input" class="form-control form-control-sm" placeholder="Ask anything...">
+            <button class="btn btn-primary btn-sm" onclick="askGemini()">Send</button>
+        </div>
+    </div>
+</div>
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   APP LAYOUT
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#app { display:none; min-height:100vh; }
-#app.visible { display:flex; }
+<script>
+    // Data Storage (Local)
+    let students = JSON.parse(localStorage.getItem('students')) || [];
 
-/* SIDEBAR */
-.sidebar {
-  width: var(--sidebar-w); min-height:100vh; background:var(--dark); color:#fff;
-  display:flex; flex-direction:column; flex-shrink:0;
-  position:sticky; top:0; height:100vh; overflow-y:auto;
-  transition: transform .3s; z-index:200;
-}
-.sidebar-brand {
-  padding:20px 20px 16px; border-bottom:1px solid rgba(255,255,255,.08);
-  display:flex; align-items:center; gap:12px;
-}
-.sb-logo {
-  width:40px; height:40px; border-radius:10px; overflow:hidden; flex-shrink:0;
-  background:linear-gradient(135deg,var(--primary),#60a5fa);
-  display:grid; place-items:center; font-size:18px;
-}
-.sb-logo img { width:100%; height:100%; object-fit:cover; }
-.sb-name { font-family:'Playfair Display',serif; font-size:15px; line-height:1.2; }
-.sb-role { font-size:10px; font-weight:600; color:var(--accent); letter-spacing:1.5px; text-transform:uppercase; }
+    function updateLoginUI() {
+        const role = document.getElementById('login-role').value;
+        const fields = document.getElementById('login-fields');
+        const userInp = document.getElementById('user-id');
+        const passInp = document.getElementById('user-pass');
 
-.nav-section { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.35); padding:16px 20px 6px; }
-.nav-link-custom {
-  display:flex; align-items:center; gap:12px; padding:10px 20px;
-  color:rgba(255,255,255,.65); font-size:13.5px; font-weight:500;
-  cursor:pointer; border-left:3px solid transparent; transition:all .18s;
-  text-decoration:none; border-radius:0
+        if(role) {
+            fields.classList.remove('hidden');
+            if(role === 'parent') {
+                userInp.placeholder = "Student Registration No.";
+                passInp.placeholder = "Parent Mobile No.";
+            } else {
+                userInp.placeholder = "Username";
+                passInp.placeholder = "Password";
+            }
+        } else {
+            fields.classList.add('hidden');
+        }
+    }
+
+    function handleLogin() {
+        const role = document.getElementById('login-role').value;
+        const id = document.getElementById('user-id').value;
+        const pass = document.getElementById('user-pass').value;
+
+        if (role === 'admin' && id === 'admin' && pass === 'admin123') {
+            showDashboard('Admin Dashboard', 'admin');
+        } else if (role === 'parent') {
+            const student = students.find(s => s.regNo === id && s.mobile === pass);
+            if(student) {
+                showDashboard('Parent Dashboard - ' + student.name, 'parent');
+            } else {
+                alert("Invalid Registration No. or Mobile No.");
+            }
+        } else {
+            showDashboard(role.charAt(0).toUpperCase() + role.slice(1) + ' Dashboard', role);
+        }
+    }
+
+    function showDashboard(title, role) {
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('main-dashboard').style.display = 'block';
+        document.getElementById('dash-title').innerText = title;
+        
+        if(role === 'admin') {
+            document.getElementById('admin-tools').classList.remove('hidden');
+            renderStudents();
+        }
+    }
+
+    function saveStudent() {
+        const name = document.getElementById('reg-name').value;
+        const regNo = document.getElementById('reg-no').value;
+        const mobile = document.getElementById('reg-mobile').value;
+        const pen = document.getElementById('reg-pen').value;
+
+        if(name && regNo && mobile) {
+            students.push({name, regNo, mobile, pen, tc: 'Active'});
+            localStorage.setItem('students', JSON.stringify(students));
+            alert("Student Registered!");
+            renderStudents();
+        }
+    }
+
+    function renderStudents() {
+        const list = document.getElementById('student-list');
+        list.innerHTML = students.map(s => `
+            <div class="border-bottom p-2 small">
+                <b>${s.name}</b> (${s.regNo})<br>
+                PEN: ${s.pen} | TC: ${s.tc}
+            </div>
+        `).join('');
+    }
+
+    function toggleChat() {
+        const chat = document.getElementById('ai-chat');
+        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    async function askGemini() {
+        const input = document.getElementById('ai-input').value;
+        const content = document.getElementById('chat-content');
+        if(!input) return;
+
+        content.innerHTML += `<div class="text-primary mt-2"><b>You:</b> ${input}</div>`;
+        document.getElementById('ai-input').value = '';
+
+        const apiKey = "AIzaSyA5d9PVGvRpODH2gefs_HzGuMa8KvBAaS8"; 
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: input + " (Answer in Odia if asked in Odia or English otherwise)" }] }] })
+            });
+            const data = await response.json();
+            const aiText = data.candidates[0].content.parts[0].text;
+            content.innerHTML += `<div class="mt-2"><b>AI:</b> ${aiText}</div>`;
+            content.scrollTop = content.scrollHeight;
+        } catch (e) {
+            content.innerHTML += `<div class="text-danger mt-2">AI Error. Check Connection.</div>`;
+        }
+    }
+</script>
+
+</body>
+                      </html>
+                                                                                    
