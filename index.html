@@ -1,50 +1,69 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Teacher Attendance System</title>
-    <script>
-        // Haversine formula distance calculation
-        function haversine(lat1, lon1, lat2, lon2) {
-            const R = 6371000; // Radius of Earth in meters
-            const dLat = (lat2 - lat1) * (Math.PI / 180);
-            const dLon = (lon2 - lon1) * (Math.PI / 180);
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + 
-                      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Distance in meters
-        }
-        
-        // Real-time location refresh and validation
-        function refreshLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(position => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const distance = haversine(lat, lon, TARGET_LAT, TARGET_LON);
-                    if (distance <= 10) {
-                        // Code to show success status
-                    } else {
-                        // Code to show failure status
-                    }
-                });
-            }
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        .header, .footer { text-align: center; padding: 1em; background: #f8f9fa; }
+        .content { padding: 2em; }
+        .login-form, .admin-panel { border: 1px solid #ccc; border-radius: 5px; padding: 2em; margin: 1em 0; }
+    </style>
 </head>
 <body>
-    <h1>Teacher Attendance System</h1>
-    <label for="name">Teacher Name:</label>
-    <input type="text" id="name" />
-    <label for="scriptUrl">Google Apps Script URL:</label>
-    <input type="text" id="scriptUrl" />
-    <button onclick="sendAttendance()">Send Attendance</button>
-    <div id="messageBox"></div>
+    <div class="header">
+        <h1>Smart School App</h1>
+    </div>
+    <div class="container">
+        <div class="content">
+            <div class="login-form">
+                <h2>Login</h2>
+                <input type="text" id="username" placeholder="Username" required />
+                <input type="password" id="password" placeholder="Password" required />
+                <button onclick="login()">Login</button>
+            </div>
+            <div class="admin-panel" style="display: none;">
+                <h2>Admin Panel</h2>
+                <button onclick="createUser()">Create User</button>
+                <button onclick="resetPassword()">Reset Password</button>
+                <h3>User Roles</h3>
+                <div>
+                    <button onclick="setRole('teacher')">Teacher Dashboard</button>
+                    <button onclick="setRole('parent')">Parent Dashboard</button>
+                    <button onclick="setRole('driver')">Driver Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>&copy; 2026 Smart School App</p>
+    </div>
     <script>
-        function sendAttendance() {
-            const name = document.getElementById('name').value;
-            const scriptUrl = document.getElementById('scriptUrl').value;
-            // AJAX call to send data to Google Sheets
-            // success and error message handling
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            // Mock validation
+            if (username && password) {
+                localStorage.setItem('user', JSON.stringify({ username, role: 'admin' }));
+                document.querySelector('.admin-panel').style.display = 'block';
+            }
+        }
+
+        function createUser() {
+            // Code for creating user
+            alert('User created!');
+        }
+
+        function resetPassword() {
+            // Code for resetting password
+            alert('Password reset link sent!');
+        }
+
+        function setRole(role) {
+            // Code to set role and redirect to respective dashboard
+            alert(`Redirecting to ${role} dashboard...`);
         }
     </script>
 </body>
